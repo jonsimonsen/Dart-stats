@@ -4,9 +4,9 @@
 
 #Creator: Jon Simonsen
 #Version None
-#Last official change: 29.01.19
+#Last official change: 30.01.19
 
-#from darts import Dart
+from scores import Dart
 
 def test_dart(mult, points, is_valid):
     """Test if initializing a new dart with mult and points gives the expected result (is_valid).
@@ -20,7 +20,7 @@ def test_dart(mult, points, is_valid):
         print(str(mult) + ' or ' + str(points) + ' is not the correct argument type.')
         return False
 
-    if Dart.getMultiplier() == mult and Dart.getPoints() == points:
+    if dart.getMultiplier() == mult and dart.getPoints() == points:
         return is_valid
     else:
         return not is_valid
