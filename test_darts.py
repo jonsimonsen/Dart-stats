@@ -8,8 +8,27 @@
 
 #from darts import Dart
 
+def test_dart(mult, points, is_valid):
+    """Test if initializing a new dart with mult and points gives the expected result (is_valid).
+    Returns True if the expected result is reached and False otherwise."""
+    try:
+        dart = Dart(mult, points)
+    except NameError:
+        print('No dart class imported.')
+        return False
+    except TypeError:
+        print(str(mult) + ' or ' + str(points) + ' is not the correct argument type.')
+        return False
+
+    if Dart.getMultiplier() == mult and Dart.getPoints() == points:
+        return is_valid
+    else:
+        return not is_valid
+
 #Variable inititalization
 results = []
+successes = 0
+fails = 0
 
 ##Tests that should succeed
 results.append(test_dart(0, 0, True))
@@ -54,3 +73,13 @@ results.append(test_dart(0, 1, False))
 results.append(test_dart(2, 0, False))
 results.append(test_dart(2, 25, False))
 results.append(test_dart(2, 50, False))
+
+for test in results:
+    if test == True:
+        successes += 1
+    else:
+        fails += 1
+
+print('\n' + str(successes) + ' tests gave the expected result.')
+print(str(fails) + ' tests did not give the expected result.')
+print(str(len(results)) + ' cases were tested.\n')
