@@ -28,6 +28,15 @@ class Dart(object):
             self._multiplier = multiplier
             self._points = points
 
+    def __str__(self):
+        """Returns a string representing the dart"""
+        if self._multiplier == None:
+            return 'Invalid dart'
+
+        prefix = ''
+        mults = ['Miss - ', 'Single ', 'Double ', 'Treble ']
+        return mults[self._multiplier] + str(self._points)
+
     def getMultiplier(self):
         """Getter for multiplier"""
         return self._multiplier

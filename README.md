@@ -26,8 +26,9 @@ The user decides what info to keep, but it is suggested to omit info that is not
 
 # History
 
-# Current version
+# Version 0.02
 -The tests were altered to confirm that wrong input gives None as attributes.  
+-A str method for darts was implemented and used in the tests.  
 
 # Version 0.01
 -Made tests to verify that valid input produces darts with correct attributes.  
@@ -37,7 +38,7 @@ The user decides what info to keep, but it is suggested to omit info that is not
 -So far, it seems like the class will be made immutable (no setters).  
 
 # TODO
--A repr method and/or str method for darts should be implemented and used in the tests.  
+
 -Write scores test cases.  
 -Construct the score class using test-driven development.  
 -Plan how to approach the design of the management app.

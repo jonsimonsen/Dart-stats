@@ -19,6 +19,8 @@ def test_dart(mult, points, is_valid):
     except TypeError:
         print(str(mult) + ' or ' + str(points) + ' is not the correct argument type.')
         return False
+    else:
+        print('<' + str(dart) + '> was created.')
 
     if dart.getMultiplier() == mult and dart.getPoints() == points:
         return is_valid
