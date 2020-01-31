@@ -26,7 +26,10 @@ The user decides what info to keep, but it is suggested to omit info that is not
 
 # History
 
-#Version 0.01
+# Current version
+-The tests were altered to confirm that wrong input gives None as attributes.  
+
+# Version 0.01
 -Made tests to verify that valid input produces darts with correct attributes.  
 -Made tests to verify that incorrect input produces darts with incorrect attributes.  
 -Made a class for darts with an init method and getters for its attributes.  
@@ -34,7 +37,6 @@ The user decides what info to keep, but it is suggested to omit info that is not
 -So far, it seems like the class will be made immutable (no setters).  
 
 # TODO
--The tests should be altered to actually confirm that wrong input gives None as attributes.  
 -A repr method and/or str method for darts should be implemented and used in the tests.  
 -Write scores test cases.  
 -Construct the score class using test-driven development.  

@@ -22,8 +22,11 @@ def test_dart(mult, points, is_valid):
 
     if dart.getMultiplier() == mult and dart.getPoints() == points:
         return is_valid
-    else:
+    elif dart.getMultiplier() == None and dart.getPoints() == None:
         return not is_valid
+    else:
+        print('Unexpected dart initialization. Needs closer code examination.')
+        return False
 
 #Variable inititalization
 results = []

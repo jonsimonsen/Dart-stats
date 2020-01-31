@@ -23,7 +23,7 @@ class Dart(object):
         except (TypeError, ValueError) as error:    #Execute on TypeError or ValueError
             print(error)
             self._multiplier = None
-            self._ponts = None
+            self._points = None
         else:
             self._multiplier = multiplier
             self._points = points
