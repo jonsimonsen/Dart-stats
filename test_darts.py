@@ -4,7 +4,7 @@
 
 #Creator: Jon Simonsen
 #Version None
-#Last official change: 30.01.19
+#Last official change: 31.01.19
 
 from scores import Dart
 
@@ -32,7 +32,6 @@ fails = 0
 
 ##Tests that should succeed
 results.append(test_dart(0, 0, True))
-results.append(test_dart(0, 1, True))
 results.append(test_dart(1, 0, True))
 results.append(test_dart(1, 1, True))
 results.append(test_dart(1, 20, True))
@@ -42,8 +41,8 @@ results.append(test_dart(1, 50, True))
 results.append(test_dart(2, 1, True))
 results.append(test_dart(2, 20, True))
 #could test some random cases in [2,19]
-results.append(test_dart(2, 1, True))
-results.append(test_dart(2, 20, True))
+results.append(test_dart(3, 1, True))
+results.append(test_dart(3, 20, True))
 
 ##Tests that should fail
 #Invalid multiplier

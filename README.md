@@ -11,7 +11,7 @@ The goal is to make a class for Dart scores and an app to keep track of scores.
 -The user is free to overrule the previous two suggestions. If the user doesn't care about distinguishing between zero point darts, using the 0 multiplier is suggested but only because that makes those scores stand out more.  
 -An attribute should keep track of the base score before considering the multiplier. It is suggested that it is called points unless a more descriptive name is found.  
 
--Extra info is an attribute for scores. Example of extra info are date, distance from the center for all darts or saying that all darts hit in the same sector. 
+-Extra info is an attribute for scores. Example of extra info are date, distance from the center for all darts or saying that all darts hit in the same sector.
 The user decides what info to keep, but it is suggested to omit info that is not of special interest. This is to reduce the management cost, and make it easier to present the scores reasonably well.  
 -The scores should contain a list of its darts. The darts should be sorted descending by multipier and then descending by points.  
 -The scores should have a representation that is suitable for printing to terminal and writing to/reading from files.  
@@ -24,9 +24,18 @@ The user decides what info to keep, but it is suggested to omit info that is not
 -Write test cases for darts attributes outside the possible ranges.  
 -Write test cases for the list of darts for a score to verify that the list is sorted correctly.  
 
+# History
+
+#Version 0.01
+-Made tests to verify that valid input produces darts with correct attributes.  
+-Made tests to verify that incorrect input produces darts with incorrect attributes.  
+-Made a class for darts with an init method and getters for its attributes.  
+-The class has a helper for the init method that verifies that its arguments are valid. Otherwise, init will print an error message and set all attributes to None.  
+-So far, it seems like the class will be made immutable (no setters).  
+
 # TODO
--Write darts test cases.  
--Construct the darts class using test-driven development.  
+-The tests should be altered to actually confirm that wrong input gives None as attributes.  
+-A repr method and/or str method for darts should be implemented and used in the tests.  
 -Write scores test cases.  
 -Construct the score class using test-driven development.  
 -Plan how to approach the design of the management app.

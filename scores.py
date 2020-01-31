@@ -4,9 +4,7 @@
 
 #Creator: Jon Simonsen
 #Version None
-#Last official change: 30.01.19
-
-SECTORS = range(1, 21)
+#Last official change: 31.01.19
 
 class Dart(object):
     """A class for darts that have been thrown at a dart board."""
@@ -20,19 +18,15 @@ class Dart(object):
         Zero point darts that hit the board are suggested as single zeros.
         """
 
-        if not (isinstance(multiplier, int) and isinstance(points, int)):
-            print('When making new Darts, all arguments must be integers.')
-            raise TypeError()
-
-        if multiplier < 0 or multiplier > 3:
-            print('Multiplier must be between 0 and 3.')
-        if multiplier == 0:
-            if points != 0:
-                print('Zero multiplier can not be combined with non-zero points.\n')
-                raise ValueError()
-
-        self._multiplier = multiplier
-        self._points = points
+        try:
+            self.validateArgs(multiplier, points)
+        except (TypeError, ValueError) as error:    #Execute on TypeError or ValueError
+            print(error)
+            self._multiplier = None
+            self._ponts = None
+        else:
+            self._multiplier = multiplier
+            self._points = points
 
     def getMultiplier(self):
         """Getter for multiplier"""
@@ -41,3 +35,25 @@ class Dart(object):
     def getPoints(self):
         """Getter for points"""
         return self._points
+
+    def validateArgs(self, multiplier, points):
+        """Helper for the init method to validate the input or throw an exception"""
+
+        #Const inititalization
+        SECTORS = range(1, 21)
+        UNSECTORED = [0, 25, 50]
+
+        if not (isinstance(multiplier, int) and isinstance(points, int)):
+            raise TypeError('When making new Darts, all arguments must be integers.')
+            return
+
+        if multiplier < 0 or multiplier > 3:
+            raise ValueError('Multiplier must be between 0 and 3.')
+        elif multiplier > 1 and (points not in SECTORS):
+            raise ValueError('Doubles or triples must be an integer between 1 and 20.')
+        elif multiplier == 1 and not (points in SECTORS or points in UNSECTORED):
+            raise ValueError('Singles must be an integer between 0 and 20 or a bull (25 or 50)')
+        elif multiplier == 0 and points != 0:
+            raise ValueError('Zero multiplier can not be combined with non-zero points.')
+
+        return
