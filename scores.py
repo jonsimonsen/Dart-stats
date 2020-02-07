@@ -4,7 +4,7 @@
 
 #Creator: Jon Simonsen
 #Version None
-#Last official change: 31.01.19
+#Last official change: 31.01.20
 
 class Dart(object):
     """A class for darts that have been thrown at a dart board."""
