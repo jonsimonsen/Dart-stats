@@ -26,6 +26,10 @@ The user decides what info to keep, but it is suggested to omit info that is not
 
 # History
 
+# Version 0.05
+-The Score init function is finished for now. It sorts its darts in descending order.  
+-Implemented a lt function for Darts.
+
 # Version 0.04
 -All tests of darts gives the expected result.  
 -Made tests to confirm that scores sort their darts correctly.  
@@ -47,7 +51,6 @@ The user decides what info to keep, but it is suggested to omit info that is not
 
 # TODO
 
--Write scores test cases.  
--Construct the score class using test-driven development.  
+-Add more attributes and methods to the scores class.  
 -Making copies of the darts before adding them to a score should be considered. This is especially true if the darts class is changed to be mutable.  
 -Plan how to approach the design of the management app.

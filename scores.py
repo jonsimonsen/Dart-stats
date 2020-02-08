@@ -3,7 +3,7 @@
 ####################
 
 #Creator: Jon Simonsen
-#Version 0.04
+#Version 0.05
 #Last official change: 08.02.20
 
 class Dart(object):
@@ -46,7 +46,13 @@ class Dart(object):
         Returns True if _multiplier is less for self or if the multipliers are equal and _points is less for self.
         Returns False otherwise.
         """
-        pass
+        if not isinstance(other, Dart):
+            return False
+
+        if self._multiplier < other._multiplier or (self._multiplier == other._multiplier and self._points < other._points):
+            return True
+        else:
+            return False
 
     def __str__(self):
         """Returns a string representing the dart"""
@@ -92,8 +98,13 @@ class Score(object):
 
     def __init__(self, dart1, dart2, dart3):
         """Create a new Score consisting of three darts."""
-        #v0.4 - no sorting, no typecheck, no copy
-        self._darts = [dart1, dart2, dart3]
+        #v0.05 - no sorting, no copy
+        if not (isinstance(dart1, Dart) and isinstance(dart2, Dart) and isinstance(dart3, Dart)):
+            print('Invalid argument to Score initializer. All darts will be initialized as None.')
+            self._darts = [None, None, None]
+        else:
+            darts = [dart1, dart2, dart3]
+            self._darts = self.sortDarts(darts)
 
     def getDart(self, index):
         """Getter for the dart at the given index in _darts.
@@ -103,3 +114,11 @@ class Score(object):
             return None
         else:
             return self._darts[index]
+
+    def sortDarts(self, darts):
+        """Helper for init that sorts darts descending.
+        darts should be a list containing the three darts for the score.
+        returns the sorted list.
+        """
+
+        return sorted(darts, reverse=True)
