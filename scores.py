@@ -3,7 +3,7 @@
 ####################
 
 #Creator: Jon Simonsen
-#Version 0.03
+#Version 0.04
 #Last official change: 08.02.20
 
 class Dart(object):
@@ -40,6 +40,13 @@ class Dart(object):
             return True
         else:
             return False
+
+    def __lt__(self, other):
+        """Compares the dart to another dart.
+        Returns True if _multiplier is less for self or if the multipliers are equal and _points is less for self.
+        Returns False otherwise.
+        """
+        pass
 
     def __str__(self):
         """Returns a string representing the dart"""
@@ -82,4 +89,17 @@ class Dart(object):
 
 class Score(object):
     """A class for scores consisting of three Dart objects."""
-    pass
+
+    def __init__(self, dart1, dart2, dart3):
+        """Create a new Score consisting of three darts."""
+        #v0.4 - no sorting, no typecheck, no copy
+        self._darts = [dart1, dart2, dart3]
+
+    def getDart(self, index):
+        """Getter for the dart at the given index in _darts.
+        Prints a message and returns None if an incorrect index is given"""
+        if not index in [0, 1, 2]:
+            print('Incorrect index given for a dart. None is returned.')
+            return None
+        else:
+            return self._darts[index]

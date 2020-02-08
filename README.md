@@ -26,6 +26,14 @@ The user decides what info to keep, but it is suggested to omit info that is not
 
 # History
 
+# Version 0.04
+-All tests of darts gives the expected result.  
+-Made tests to confirm that scores sort their darts correctly.  
+-Refactored code into a score summary function named printTests.  
+-Made an equality function for darts, and started making a less than function.  
+-Made a Score class with an init function without type checking or sorting.  
+-Made a getter for darts in the Score class. It takes the index of the dart as a parameter.
+
 # Version 0.02
 -The tests were altered to confirm that wrong input gives None as attributes.  
 -A str method for darts was implemented and used in the tests.  
@@ -41,4 +49,5 @@ The user decides what info to keep, but it is suggested to omit info that is not
 
 -Write scores test cases.  
 -Construct the score class using test-driven development.  
+-Making copies of the darts before adding them to a score should be considered. This is especially true if the darts class is changed to be mutable.  
 -Plan how to approach the design of the management app.

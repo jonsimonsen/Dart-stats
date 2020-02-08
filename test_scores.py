@@ -3,7 +3,7 @@
 ####################
 
 #Creator: Jon Simonsen
-#Version 0.03
+#Version 0.04
 #Last official change: 08.02.20
 
 from scores import Dart, Score
@@ -16,7 +16,7 @@ def test_score(dart1, dart2, dart3, order):
     returns True if the order is correct, and False otherwise.
     """
     score = Score(dart1, dart2, dart3)
-    if score.getDart(0) == dart1 and score.getDart(1) == dart2 and score.getDart(2) == dart3:
+    if score.getDart(order[0]) == dart1 and score.getDart(order[1]) == dart2 and score.getDart(order[2]) == dart3:
         return True
     else:
         print('test failed.')
@@ -42,31 +42,31 @@ maxHit = Dart(3, 20)
 
 #Presorted
 print('Testing sorted darts')
-results.append(test_score(gutter, gutter, gutter, [1, 2, 3]))
-results.append(test_score(minHit, board, gutter, [1, 2, 3]))
-results.append(test_score(unbiased, almost, minHit, [1, 2, 3]))
-results.append(test_score(maxHit, eyes, no_cigar, [1, 2, 3]))
-results.append(test_score(maxHit, unusual, minHit, [1, 2, 3]))
-results.append(test_score(maxHit, finish, standard, [1, 2, 3]))
-results.append(test_score(no_cigar, unusual, standard, [1, 2, 3]))
+results.append(test_score(gutter, gutter, gutter, [0, 1, 2]))
+results.append(test_score(minHit, board, gutter, [0, 1, 2]))
+results.append(test_score(unbiased, almost, minHit, [0, 1, 2]))
+results.append(test_score(maxHit, eyes, no_cigar, [0, 1, 2]))
+results.append(test_score(maxHit, unusual, minHit, [0, 1, 2]))
+results.append(test_score(maxHit, finish, standard, [0, 1, 2]))
+results.append(test_score(no_cigar, unusual, standard, [0, 1, 2]))
 
 #Reversed
 print('Testing reversely sorted darts')
-results.append(test_score(gutter, board, minHit, [3, 2, 1]))
-results.append(test_score(minHit, almost, unbiased, [3, 2, 1]))
-results.append(test_score(no_cigar, eyes, maxHit, [3, 2, 1]))
-results.append(test_score(minHit, unusual, maxHit, [3, 2, 1]))
-results.append(test_score(standard, finish, maxHit, [3, 2, 1]))
-results.append(test_score(standard, unusual, no_cigar, [3, 2, 1]))
+results.append(test_score(gutter, board, minHit, [2, 1, 0]))
+results.append(test_score(minHit, almost, unbiased, [2, 1, 0]))
+results.append(test_score(no_cigar, eyes, maxHit, [2, 1, 0]))
+results.append(test_score(minHit, unusual, maxHit, [2, 1, 0]))
+results.append(test_score(standard, finish, maxHit, [2, 1, 0]))
+results.append(test_score(standard, unusual, no_cigar, [2, 1, 0]))
 
 #Random order
 print('Testing randomly ordered darts')
-results.append(test_score(board, gutter, minHit, [2, 3, 1]))
-results.append(test_score(minHit, unbiased, almost, [3, 1, 2]))
-results.append(test_score(maxHit, no_cigar, eyes, [1, 3, 2]))
-results.append(test_score(maxHit, minHit, unusual, [1, 3, 2]))
-results.append(test_score(standard, maxHit, finish, [3, 1, 2]))
-results.append(test_score(unusual, no_cigar, standard, [2, 1, 3]))
+results.append(test_score(board, gutter, minHit, [1, 2, 0]))
+results.append(test_score(minHit, unbiased, almost, [2, 0, 1]))
+results.append(test_score(maxHit, no_cigar, eyes, [0, 2, 1]))
+results.append(test_score(maxHit, minHit, unusual, [0, 2, 1]))
+results.append(test_score(standard, maxHit, finish, [2, 0, 1]))
+results.append(test_score(unusual, no_cigar, standard, [1, 0, 2]))
 
 #Print summary
 printTests(results)
