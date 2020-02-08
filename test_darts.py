@@ -3,9 +3,10 @@
 ####################
 
 #Creator: Jon Simonsen
-#Version None
-#Last official change: 31.01.20
+#Version 0.03
+#Last official change: 08.02.20
 
+from testframe import printTests
 from scores import Dart
 
 def test_dart(mult, points, is_valid):
@@ -32,8 +33,6 @@ def test_dart(mult, points, is_valid):
 
 #Variable inititalization
 results = []
-successes = 0
-fails = 0
 
 ##Tests that should succeed
 results.append(test_dart(0, 0, True))
@@ -78,12 +77,5 @@ results.append(test_dart(2, 0, False))
 results.append(test_dart(2, 25, False))
 results.append(test_dart(2, 50, False))
 
-for test in results:
-    if test == True:
-        successes += 1
-    else:
-        fails += 1
-
-print('\n' + str(successes) + ' tests gave the expected result.')
-print(str(fails) + ' tests did not give the expected result.')
-print(str(len(results)) + ' cases were tested.\n')
+#Test summary
+printTests(results)

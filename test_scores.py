@@ -3,10 +3,11 @@
 ####################
 
 #Creator: Jon Simonsen
-#Version None
-#Last official change: 07.02.20
+#Version 0.03
+#Last official change: 08.02.20
 
-#from scores import Dart, Score
+from scores import Dart, Score
+from testframe import printTests
 
 def test_score(dart1, dart2, dart3, order):
     """Function for testing a score. Makes a new score for the given darts.
@@ -23,8 +24,6 @@ def test_score(dart1, dart2, dart3, order):
 
 #Variable initialization
 results = []
-successes = 0
-fails = 0
 
 #Make some darts for testing
 gutter = Dart(0, 0)
@@ -69,13 +68,5 @@ results.append(test_score(maxHit, minHit, unusual, [1, 3, 2]))
 results.append(test_score(standard, maxHit, finish, [3, 1, 2]))
 results.append(test_score(unusual, no_cigar, standard, [2, 1, 3]))
 
-#Should refactor this into a utility function, since it is used in several tests.
-for test in results:
-    if test == True:
-        successes += 1
-    else:
-        fails += 1
-
-print('\n' + str(successes) + ' tests gave the expected result.')
-print(str(fails) + ' tests did not give the expected result.')
-print(str(len(results)) + ' cases were tested.\n')
+#Print summary
+printTests(results)

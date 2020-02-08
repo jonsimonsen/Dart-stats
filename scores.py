@@ -3,8 +3,8 @@
 ####################
 
 #Creator: Jon Simonsen
-#Version None
-#Last official change: 31.01.20
+#Version 0.03
+#Last official change: 08.02.20
 
 class Dart(object):
     """A class for darts that have been thrown at a dart board."""
@@ -27,6 +27,19 @@ class Dart(object):
         else:
             self._multiplier = multiplier
             self._points = points
+
+    def __eq__(self, other):
+        """Compares the dart to another dart.
+        Returns True if _multiplier and _points are the same for both darts.
+        Returns False otherwise.
+        """
+        if not isinstance(other, Dart):
+            return False
+
+        if (self._multiplier == other._multiplier) and (self._points == other._points):
+            return True
+        else:
+            return False
 
     def __str__(self):
         """Returns a string representing the dart"""
@@ -66,3 +79,7 @@ class Dart(object):
             raise ValueError('Zero multiplier can not be combined with non-zero points.')
 
         return
+
+class Score(object):
+    """A class for scores consisting of three Dart objects."""
+    pass
