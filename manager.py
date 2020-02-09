@@ -87,6 +87,9 @@ class Manager(object):
             '6': 'Exit\n'
         }
 
+    def makeOptions(self, objectType):
+        self._options.['1'] = 'Load {}s from file'.format(objectType)
+
     def makeMenu(self):
         """Makes a menu displaying the options the user can choose from."""
         menu = [
