@@ -6,6 +6,8 @@
 #Version 0.05
 #Last official change: 09.02.20
 
+from saveable import Saveable
+
 class Dart(object):
     """A class for darts that have been thrown at a dart board."""
 
@@ -97,12 +99,13 @@ class Dart(object):
 
         return
 
-class Score(object):
+class Score(Saveable):
     """A class for scores consisting of three Dart objects."""
 
     def __init__(self, dart1, dart2, dart3):
         """Create a new Score consisting of three darts."""
-        #v0.05 - no sorting, no copy
+        #v0.05 - no copying
+        self._info = ''
         self._total = 0
         if not (isinstance(dart1, Dart) and isinstance(dart2, Dart) and isinstance(dart3, Dart)):
             print('Invalid argument to Score initializer. All darts will be initialized as None.')
@@ -123,6 +126,11 @@ class Score(object):
             darts.append(str(dart))
 
         return '[ ' + ', '.join(darts) + ' ] Score: ' + str(self._total)
+
+    def __repr__(self):
+        """Return a string representation of the score including info."""
+
+        return str(self) + " - " + self._info
 
     def getDart(self, index):
         """Getter for the dart at the given index in _darts.
