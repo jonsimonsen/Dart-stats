@@ -3,10 +3,14 @@
 ####################
 
 #Creator: Jon Simonsen
-#Version 0.05
+#Version 0.1
 #Last official change: 09.02.20
 
+#Imports
 from saveable import Saveable
+
+#Global consts
+MULTS = ['Miss - ', 'Single ', 'Double ', 'Treble ']    #Must have equal length for parsing to work
 
 class Dart(object):
     """A class for darts that have been thrown at a dart board."""
@@ -62,8 +66,7 @@ class Dart(object):
             return 'Invalid dart'
 
         prefix = ''
-        mults = ['Miss - ', 'Single ', 'Double ', 'Treble ']
-        return mults[self._multiplier] + str(self._points)
+        return MULTS[self._multiplier] + '{:>2}'.format(self._points)
 
     def getMultiplier(self):
         """Getter for multiplier"""
@@ -125,7 +128,7 @@ class Score(Saveable):
         for dart in self._darts:
             darts.append(str(dart))
 
-        return '[ ' + ', '.join(darts) + ' ] Score: ' + str(self._total)
+        return '[ ' + ', '.join(darts) + ' ] Score: {:>3}'.format(self._total)
 
     def __repr__(self):
         """Return a string representation of the score including info."""
@@ -153,3 +156,36 @@ class Score(Saveable):
         """
 
         return sorted(darts, reverse=True)
+
+#Function that creates scores instances from a file
+def readScores(handle):
+    """Read all Scores from the file that handle references and return a list of these scores."""
+
+    #Initialize variables
+    result = []
+    darts = None
+    newScore = None
+    scores = handle.readlines()
+    mul = 0
+    mulLen = len(MULTS[0])
+    points = 0
+
+    #Parse the read file and make new scores
+    for s in scores:
+        start = 2
+        darts = []
+
+        for num in range(3):
+            mul = MULTS.index(s[start:start + mulLen])
+            start = start + mulLen
+            points = int(s[start:start + 2])
+            darts.append(Dart(mul, points))
+            start += 4
+
+        start += 14
+        newScore = Score(darts[0], darts[1], darts[2])
+        if len(s) > start:
+            newScore.setInfo(s[start:len(s)])
+        result.append(newScore)
+
+    return result

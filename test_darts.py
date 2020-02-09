@@ -3,9 +3,10 @@
 ####################
 
 #Creator: Jon Simonsen
-#Version 0.03
+#Version 0.1
 #Last official change: 08.02.20
 
+#Imports
 from testframe import printTests
 from scores import Dart
 
