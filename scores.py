@@ -4,7 +4,7 @@
 
 #Creator: Jon Simonsen
 #Version 0.05
-#Last official change: 08.02.20
+#Last official change: 09.02.20
 
 class Dart(object):
     """A class for darts that have been thrown at a dart board."""
@@ -71,6 +71,10 @@ class Dart(object):
         """Getter for points"""
         return self._points
 
+    def getScore(self):
+        """Getter for the total score"""
+        return self._multiplier * self._points
+
     def validateArgs(self, multiplier, points):
         """Helper for the init method to validate the input or throw an exception"""
 
@@ -99,21 +103,40 @@ class Score(object):
     def __init__(self, dart1, dart2, dart3):
         """Create a new Score consisting of three darts."""
         #v0.05 - no sorting, no copy
+        self._total = 0
         if not (isinstance(dart1, Dart) and isinstance(dart2, Dart) and isinstance(dart3, Dart)):
             print('Invalid argument to Score initializer. All darts will be initialized as None.')
             self._darts = [None, None, None]
         else:
             darts = [dart1, dart2, dart3]
             self._darts = self.sortDarts(darts)
+            for dart in self._darts:
+                self._total += dart.getScore()
+
+    def __str__(self):
+        """Return a string representation of the score."""
+        if self.getDart(0) is None:
+            return "Undefined score."
+
+        darts = []
+        for dart in self._darts:
+            darts.append(str(dart))
+
+        return '[ ' + ', '.join(darts) + ' ] Score: ' + str(self._total)
 
     def getDart(self, index):
         """Getter for the dart at the given index in _darts.
-        Prints a message and returns None if an incorrect index is given"""
+        Prints a message and returns None if an incorrect index is given.
+        """
         if not index in [0, 1, 2]:
             print('Incorrect index given for a dart. None is returned.')
             return None
         else:
             return self._darts[index]
+
+    def getTotal(self):
+        """Getter for _total"""
+        return self._total
 
     def sortDarts(self, darts):
         """Helper for init that sorts darts descending.

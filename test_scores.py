@@ -16,6 +16,7 @@ def test_score(dart1, dart2, dart3, order):
     returns True if the order is correct, and False otherwise.
     """
     score = Score(dart1, dart2, dart3)
+    print(str(score))
     if score.getDart(order[0]) == dart1 and score.getDart(order[1]) == dart2 and score.getDart(order[2]) == dart3:
         return True
     else:
