@@ -74,29 +74,54 @@ def getPosInt(valName, maxVal):
 class Manager(object):
     """Manager for objects of the Saveable class"""
 
-    def __init__(self):
+    def __init__(self, objName, objEnding):
         """Create a new manager"""
         self._running = True
         self._modified = False
-        self._options = {
-            '1': 'Load objects from file',
-            '2': 'Display all objects',
-            '3': 'Add a new object',
-            '4': 'Modify an existing object',
-            '5': 'Save all objects',
-            '6': 'Exit\n'
-        }
+        # self.test = [
+        #     '{}pre',
+        #     'in{}middle',
+        #     'post{}'
+        # ]
+        # print(self.test)
+        # for t in self.test:
+        #     print('test'.join(t.split('{}')))
+        #     print(t)
+        # print(self.test)
+        self._options = [
+            'Exit\n',
+            'Load * from file',
+            'Display all *',
+            'Add a new -',
+            'Modify an existing -',
+            'Save all *'
+        ]
 
-    def makeOptions(self, objectType):
-        self._options.['1'] = 'Load {}s from file'.format(objectType)
+        self.makeOptions(objName, objEnding)
+        print(self._options)
+        # self._options = {
+        #     '1': 'Load objects from file',
+        #     '2': 'Display all objects',
+        #     '3': 'Add a new object',
+        #     '4': 'Modify an existing object',
+        #     '5': 'Save all objects',
+        #     '6': 'Exit\n'
+        # }
+
+    def makeOptions(self, objectName, objectEnding):
+        for i in range(len(self._options)):
+            self._options[i] = objectName.join(self._options[i].split('-'))
+            self._options[i] = (objectName + objectEnding).join(self._options[i].split('*'))
+        # self._options.append()
+        # self._options.['1'] = 'Load {}s from file'.format(objectType)
 
     def makeMenu(self):
         """Makes a menu displaying the options the user can choose from."""
         menu = [
             'Please choose what to do next:',
             '------------------------------']
-        for num, opt in self._options:
-            menu.append(str(num) + ': ' + opt)
+        # for num, opt in self._options:
+        #     menu.append(str(num) + ': ' + opt)
 
         [print(line) for line in menu]
 
@@ -244,108 +269,110 @@ def changeCounter(counterList):
 ##########################
 
 #Variable initialization
-running = True
-counters = []
-file = None
-prompt = ''
-print(GREETING + INFO)
-modified = False    #True if counters have been added since last load, false otherwise.
-
-clearTerminal()
+# running = True
+# counters = []
+# file = None
+# prompt = ''
+# print(GREETING + INFO)
+# modified = False    #True if counters have been added since last load, false otherwise.
+#
+# clearTerminal()
 
 #Main loop
-while running:
-    makeMenu()
-    res = input('Enter the digit corresponding to your choice: ')
-    if res == '1':
-        reading = True
-        clearTerminal()
-        if modified and len(counters) > 0:
-            print('Loading from file will overwrite all current counters. Are you sure you want to do this?\n')
-            reading = getConfirmation() #Do not proceed if the user doesn't confirm
+# while running:
+#     makeMenu()
+#     res = input('Enter the digit corresponding to your choice: ')
+#     if res == '1':
+#         reading = True
+#         clearTerminal()
+#         if modified and len(counters) > 0:
+#             print('Loading from file will overwrite all current counters. Are you sure you want to do this?\n')
+#             reading = getConfirmation() #Do not proceed if the user doesn't confirm
+#
+#         if reading:
+#             #Try to read from file. Inform the user if the file was not found.
+#             try:
+#                 file = open(FILENAME, 'r')
+#                 counters = readCounters(file)
+#                 file.close()
+#                 print('Data was read from file.\n')
+#                 modified = False
+#             except FileNotFoundError:
+#                 print('There is no file that can be loaded. No changes were made.\n')
+#         else:
+#             print('No data was read.\n')
+#     elif res == '2':
+#         if len(counters) == 0:
+#             clearTerminal()
+#             print('No counters have been added yet.\n')
+#         else:
+#             browsePages(counters)
+#     elif res == '3':
+#         counter = addCounter()
+#         if counter is None:
+#             print('No counter was added.\n')
+#         else:
+#             counters.append(counter)
+#             modified = True
+#             print('The counter has been added.\n')
+#     elif res == '4':
+#         counterTup = changeCounter(counters)
+#
+#         if counterTup is None:
+#             continue
+#
+#         counter = counterTup[0]
+#
+#         #Display the old and new counter and ask if the changes are ok
+#         print('The original counter was:\n')
+#         counters[counterTup[1]].printCounter()
+#
+#         if counter is None:
+#             print('\nAre you sure you want to delete it?\n')
+#             if getConfirmation():
+#                 counters.pop(counterTup[1])
+#                 print('The counter has been deleted.\n')
+#                 modified = True
+#             else:
+#                 print('No changes were made.\n')
+#         else:
+#             print('\nHere is your new counter:\n')
+#             counter.printCounter()
+#             print('\nDo you want to keep these changes?\n')
+#
+#             if getConfirmation():
+#                 counters[counterTup[1]] = counter
+#                 print('The counter was updated.\n')
+#                 modified = True
+#             else:
+#                 print('Modification aborted. No changes were made.\n')
+#     elif res == '5':
+#         clearTerminal()
+#         if len(counters) == 0:
+#             print("There are no counters to save.\n")
+#         else:
+#             print("Saving will overwrite all content in '" + FILENAME + "'. Are you sure?\n")
+#             if getConfirmation():
+#                 file = open(FILENAME, 'w')
+#                 for counter in counters:
+#                     counter.writeToFile(file)
+#                 file.close()
+#                 modified = False
+#                 print('Data saved.\n')
+#             else:
+#                 print('Save aborted.\n')
+#     elif res == '6':
+#         clearTerminal()
+#         quitting = True
+#         if modified:
+#             print('You have made unsaved changes to the counters. Are you sure you want to exit without saving?\n')
+#             quitting = getConfirmation()
+#
+#         if quitting:
+#             running = False
+#             print('Have a nice day.\n')
+#     else:
+#         clearTerminal()
+#         print('You entered an invalid option. Try again.\n')
 
-        if reading:
-            #Try to read from file. Inform the user if the file was not found.
-            try:
-                file = open(FILENAME, 'r')
-                counters = readCounters(file)
-                file.close()
-                print('Data was read from file.\n')
-                modified = False
-            except FileNotFoundError:
-                print('There is no file that can be loaded. No changes were made.\n')
-        else:
-            print('No data was read.\n')
-    elif res == '2':
-        if len(counters) == 0:
-            clearTerminal()
-            print('No counters have been added yet.\n')
-        else:
-            browsePages(counters)
-    elif res == '3':
-        counter = addCounter()
-        if counter is None:
-            print('No counter was added.\n')
-        else:
-            counters.append(counter)
-            modified = True
-            print('The counter has been added.\n')
-    elif res == '4':
-        counterTup = changeCounter(counters)
-
-        if counterTup is None:
-            continue
-
-        counter = counterTup[0]
-
-        #Display the old and new counter and ask if the changes are ok
-        print('The original counter was:\n')
-        counters[counterTup[1]].printCounter()
-
-        if counter is None:
-            print('\nAre you sure you want to delete it?\n')
-            if getConfirmation():
-                counters.pop(counterTup[1])
-                print('The counter has been deleted.\n')
-                modified = True
-            else:
-                print('No changes were made.\n')
-        else:
-            print('\nHere is your new counter:\n')
-            counter.printCounter()
-            print('\nDo you want to keep these changes?\n')
-
-            if getConfirmation():
-                counters[counterTup[1]] = counter
-                print('The counter was updated.\n')
-                modified = True
-            else:
-                print('Modification aborted. No changes were made.\n')
-    elif res == '5':
-        clearTerminal()
-        if len(counters) == 0:
-            print("There are no counters to save.\n")
-        else:
-            print("Saving will overwrite all content in '" + FILENAME + "'. Are you sure?\n")
-            if getConfirmation():
-                file = open(FILENAME, 'w')
-                for counter in counters:
-                    counter.writeToFile(file)
-                file.close()
-                modified = False
-                print('Data saved.\n')
-            else:
-                print('Save aborted.\n')
-    elif res == '6':
-        clearTerminal()
-        quitting = True
-        if modified:
-            print('You have made unsaved changes to the counters. Are you sure you want to exit without saving?\n')
-            quitting = getConfirmation()
-
-        if quitting:
-            running = False
-            print('Have a nice day.\n')
-    else:
-        clearTerminal()
-        print('You entered an invalid option. Try again.\n')
+man = Manager('testClass', 'es')
