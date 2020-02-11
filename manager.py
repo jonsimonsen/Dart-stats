@@ -26,15 +26,18 @@ import os
 ###########
 
 def clearTerminal():
-    """Clear the terminal or command window that python is running in. Found at
-    https://stackoverflow.com/questions/517970/how-to-clear-the-interpreter-console
+    """Clear the terminal or command window that python is running in.
+
+    Found at https://stackoverflow.com/questions/517970/how-to-clear-the-interpreter-console
     """
     os.system('cls' if os.name == 'nt' else 'clear')
 
 def getConfirmation():
     """Prompts the user for input until 'y' or 'n' has been entered.
+
     An explanation of what the user can confirm should be given before calling the function.
     Clears the terminal before returning.
+
     Returns True if 'y' and False if 'n'
     """
     answer = ''
@@ -78,52 +81,49 @@ class Manager(object):
         """Create a new manager"""
         self._running = True
         self._modified = False
-        # self.test = [
-        #     '{}pre',
-        #     'in{}middle',
-        #     'post{}'
-        # ]
-        # print(self.test)
-        # for t in self.test:
-        #     print('test'.join(t.split('{}')))
-        #     print(t)
-        # print(self.test)
-        self._options = [
-            'Exit\n',
-            'Load * from file',
-            'Display all *',
-            'Add a new -',
-            'Modify an existing -',
-            'Save all *'
-        ]
 
-        self.makeOptions(objName, objEnding)
-        print(self._options)
-        # self._options = {
-        #     '1': 'Load objects from file',
-        #     '2': 'Display all objects',
-        #     '3': 'Add a new object',
-        #     '4': 'Modify an existing object',
-        #     '5': 'Save all objects',
-        #     '6': 'Exit\n'
-        # }
+        self._options = self.makeOptions(objName, objEnding)
+        self._menu = self.makeMenu()
+        #self.showMenu()
 
     def makeOptions(self, objectName, objectEnding):
-        for i in range(len(self._options)):
-            self._options[i] = objectName.join(self._options[i].split('-'))
-            self._options[i] = (objectName + objectEnding).join(self._options[i].split('*'))
-        # self._options.append()
-        # self._options.['1'] = 'Load {}s from file'.format(objectType)
+        """Creates options for a menu.
+
+        objectName should be a string containing the name of an object of the managed class (usually the name of the class itself).
+        objectEnding should be a string with the ending for a collection of several objects of that class.
+
+        Returns the options.
+        """
+        singular = objectName
+        plural = objectName + objectEnding
+
+        options = [
+            'Exit\n',
+            'Load ' + plural + ' from file',
+            'Display all ' + plural,
+            'Add a new ' + singular,
+            'Modify an existing ' + singular,
+            'Save all ' + plural
+        ]
+
+        return options
 
     def makeMenu(self):
         """Makes a menu displaying the options the user can choose from."""
         menu = [
             'Please choose what to do next:',
             '------------------------------']
-        # for num, opt in self._options:
-        #     menu.append(str(num) + ': ' + opt)
+        for num, opt in enumerate(self._options[1:], 1):
+            menu.append(str(num) + ': ' + opt)
+        menu.append('0: ' + self._options[0])
 
-        [print(line) for line in menu]
+        return menu
+
+        #[print(line) for line in menu]
+
+    def showMenu(self):
+        """Displays the menu on in the terminal."""
+        [print(line) for line in self._menu]
 
     def run(self):
         while self._running:
