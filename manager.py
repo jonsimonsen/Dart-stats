@@ -6,20 +6,17 @@
 #Version 0.1
 #Last official change: 09.02.20
 
-#DELETE
-#Contains a menu-driven environment for managing UnitCounters.
+#Contains a menu-driven environment for managing objects.
 #This includes adding, modifying, displaying, saving and loading instances.
-#/DELETE
 
 #Imports
-#from unitcounter import UnitCounter, readCounters, NAME_LEN, COUNT_LEN
 import os
 
 #Global constants
-#FILENAME = 'count_out.txt'
-#GREETING = '\nWelcome to Countem, an app for counting things.\n\n'
-#INFO = "This app will use the file '" + FILENAME + "' in this directory for loading and saving data.\n"
-#PAGESIZE = 16   #Number of counters to display on a page (when modifying)
+FILENAME = 'get_out.txt'
+GREETING = '\nWelcome. This is a greeting for the base Manager class, and should be overridden for real classes.\n\n'
+INFO = "This Manager will use the file '" + FILENAME + "' in this directory for loading and saving data,\nbut this info and the file name should be overridden for real Manager classes.\n"
+PAGESIZE = 16   #Number of objects to display on a page (when modifying or showing objects)
 
 ###########
 # Methods #
@@ -85,6 +82,7 @@ class Manager(object):
         self._options = self.makeOptions(objName, objEnding)
         self._menu = self.makeMenu()
         #self.showMenu()
+        self.greet()
 
     def makeOptions(self, objectName, objectEnding):
         """Creates options for a menu.
@@ -111,7 +109,7 @@ class Manager(object):
     def makeMenu(self):
         """Makes a menu displaying the options the user can choose from."""
         menu = [
-            'Please choose what to do next:',
+            'Please choose what to do next (enter the digit corresponding to your choice):',
             '------------------------------']
         for num, opt in enumerate(self._options[1:], 1):
             menu.append(str(num) + ': ' + opt)
@@ -125,12 +123,26 @@ class Manager(object):
         """Displays the menu on in the terminal."""
         [print(line) for line in self._menu]
 
+    def greet(self):
+        """Displays a greeting and additional info.
+
+        GREETING must be defined as a global constant.
+        INFO must be defined as a global constant.
+        """
+        #Should probably be defined as an ADT method to be defined in children
+        print(GREETING + INFO)
+
+    def chooseAction(self, choice):
+        if choice == 0:
+            self._running = False
+            print('Have a nice day.\n')
+
     def run(self):
         while self._running:
-            self.makeMenu()
+            self.showMenu()
+            choice = getPosInt('your choice', len(self._options) - 1)
 
-            res = input('Enter the digit corresponding to your choice: ')
-
+            self.chooseAction(choice)
 
 def browsePages(counterList, modifying = False):
     """Uses PAGESIZE to display the counters in counterList on several pages.
@@ -376,3 +388,4 @@ def changeCounter(counterList):
 #         print('You entered an invalid option. Try again.\n')
 
 man = Manager('testClass', 'es')
+man.run()
