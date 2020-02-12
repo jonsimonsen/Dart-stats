@@ -74,34 +74,27 @@ def getPosInt(valName, maxVal):
 class Manager(object):
     """Manager for objects of the Saveable class"""
 
-    def __init__(self, objName, objEnding):
+    def __init__(self, singular, plural):
         """Create a new manager"""
         self._running = True
         self._modified = False
+        self._singular = singular
+        self._plural = plural
 
-        self._options = self.makeOptions(objName, objEnding)
+        self._options = self.makeOptions()
         self._menu = self.makeMenu()
-        #self.showMenu()
         self.greet()
 
-    def makeOptions(self, objectName, objectEnding):
-        """Creates options for a menu.
-
-        objectName should be a string containing the name of an object of the managed class (usually the name of the class itself).
-        objectEnding should be a string with the ending for a collection of several objects of that class.
-
-        Returns the options.
-        """
-        singular = objectName
-        plural = objectName + objectEnding
+    def makeOptions(self):
+        """Creates a list of options for a menu and returns it."""
 
         options = [
             'Exit\n',
-            'Load ' + plural + ' from file',
-            'Display all ' + plural,
-            'Add a new ' + singular,
-            'Modify an existing ' + singular,
-            'Save all ' + plural
+            'Load ' + self._plural + ' from file',
+            'Show all ' + self._plural,
+            'Add a new ' + self._singular,
+            'Modify an existing ' + self._singular,
+            'Save all ' + self._plural
         ]
 
         return options
@@ -115,12 +108,14 @@ class Manager(object):
             menu.append(str(num) + ': ' + opt)
         menu.append('0: ' + self._options[0])
 
+        #Options does not need to keep track of more than the first word anymore
+        for num, opt in enumerate(self._options):
+            self._options[num] = opt.split()[0].lower()
+
         return menu
 
-        #[print(line) for line in menu]
-
     def showMenu(self):
-        """Displays the menu on in the terminal."""
+        """Displays the menu in the terminal."""
         [print(line) for line in self._menu]
 
     def greet(self):
@@ -133,9 +128,24 @@ class Manager(object):
         print(GREETING + INFO)
 
     def chooseAction(self, choice):
-        if choice == 0:
-            self._running = False
-            print('Have a nice day.\n')
+        """Choose the action corresponding to choice.
+
+        choice should be the index of an option in self._options.
+        If this is the case, it calls the class method with the same name as that option.
+        If not, it calls self.reprompt().
+        """
+
+        option = 'undefinedMethod'
+        try:
+            option = self._options[choice]
+        except Exception:
+            pass
+
+        #https://www.pydanny.com/why-doesnt-python-have-switch-case.html
+        method = getattr(self, option, 'invalid')
+        if method == 'invalid':
+            method = getattr(self, 'reprompt')
+        return method()
 
     def run(self):
         while self._running:
@@ -143,6 +153,36 @@ class Manager(object):
             choice = getPosInt('your choice', len(self._options) - 1)
 
             self.chooseAction(choice)
+
+    def exit(self):
+        clearTerminal()
+        quitting = True
+        if self._modified:
+            print('You have made unsaved changes to the counters. Are you sure you want to exit without saving?\n')
+            quitting = getConfirmation()
+
+        if quitting:
+            self._running = False
+            print('Have a nice day.\n')
+
+    def load(self):
+        print('Loading')
+
+    def show(self):
+        print('Showing')
+
+    def add(self):
+        print('Adding')
+
+    def modify(self):
+        print('Modifying')
+
+    def save(self):
+        print('Saving')
+
+    def reprompt(self):
+        print('Reprompting')
+
 
 def browsePages(counterList, modifying = False):
     """Uses PAGESIZE to display the counters in counterList on several pages.
@@ -387,5 +427,5 @@ def changeCounter(counterList):
 #         clearTerminal()
 #         print('You entered an invalid option. Try again.\n')
 
-man = Manager('testClass', 'es')
+man = Manager('testClass', 'testClasses')
 man.run()
