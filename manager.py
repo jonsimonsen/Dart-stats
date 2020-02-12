@@ -84,6 +84,9 @@ class Manager(object):
 
         self._options = self.makeOptions()
         self._menu = self.makeMenu()
+
+        #Greet the user
+        clearTerminal()
         self.greet()
 
     def makeOptions(self):
@@ -257,7 +260,21 @@ class Manager(object):
             browsePages(self._collection)
 
     def add(self):
-        print('Adding')
+        obj = self.addObject()
+
+        #Display the counter and ask if it should be added
+        clearTerminal()
+        print('Here is your ' + self._singular + ':\n')
+        #counter.printCounter()
+        print(obj)
+        print('\nDo you want to add it to your list of ' + self._plural + '?\n')
+
+        if getConfirmation():
+            self._collection.append(obj)
+            self._modified = True
+            print('The ' + self._singular + ' has been added.\n')
+        else:
+            print('No ' + self._singular + ' was added.\n')
 
     def modify(self):
         print('Modifying')
@@ -285,42 +302,6 @@ class Manager(object):
         """
         clearTerminal()
         print('You entered an invalid option. Try again.\n')
-
-def addCounter():
-    """Prompts the user for input to create a new counter and asks if it should be added.
-    Clears the terminal before returning.
-    Returns the counter if the user says yes and None otherwise.
-    """
-    #Ask for the name of the counter
-    clearTerminal()
-    prompt = 'Please enter the name of the counter (Max. ' + str(NAME_LEN) + ' characters): '
-    name = input(prompt)
-    while len(name) == 0 or len(name) > NAME_LEN:
-        name = input('The name must be between 1 and ' + str(NAME_LEN) + ' characters long. Try again: ')
-
-    #Ask for the count
-    clearTerminal()
-    count = getPosInt('The count', 10**COUNT_LEN - 1)
-
-    #Create the counter
-    counter = UnitCounter(name, int(count))
-
-    #Add info if the user wishes
-    clearTerminal()
-    info = input('Type any additional info and press enter (press enter directly if there is no additional info): ')
-    if len(info):
-        counter.setInfo(info)
-
-    #Display the counter and ask if it should be added
-    clearTerminal()
-    print('Here is your counter:\n')
-    counter.printCounter()
-    print('\nDo you want to add it to your list of counters?\n')
-
-    if getConfirmation():
-        return counter
-    else:
-        return None
 
 def changeCounter(counterList):
     """Function for creating a new counter based on an existing one and returning the new one along with a reference to the old one.
@@ -369,34 +350,6 @@ def changeCounter(counterList):
 # Main (executable code) #
 ##########################
 
-#Variable initialization
-# running = True
-# counters = []
-# file = None
-# prompt = ''
-# print(GREETING + INFO)
-# modified = False    #True if counters have been added since last load, false otherwise.
-#
-# clearTerminal()
-
-#Main loop
-# while running:
-#     makeMenu()
-#     res = input('Enter the digit corresponding to your choice: ')
-#     elif res == '2':
-#         if len(counters) == 0:
-#             clearTerminal()
-#             print('No counters have been added yet.\n')
-#         else:
-#             browsePages(counters)
-#     elif res == '3':
-#         counter = addCounter()
-#         if counter is None:
-#             print('No counter was added.\n')
-#         else:
-#             counters.append(counter)
-#             modified = True
-#             print('The counter has been added.\n')
 #     elif res == '4':
 #         counterTup = changeCounter(counters)
 #
