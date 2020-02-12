@@ -80,6 +80,7 @@ class Manager(object):
         self._modified = False
         self._singular = singular
         self._plural = plural
+        self._collection = []
 
         self._options = self.makeOptions()
         self._menu = self.makeMenu()
@@ -100,7 +101,12 @@ class Manager(object):
         return options
 
     def makeMenu(self):
-        """Makes a menu displaying the options the user can choose from."""
+        """Makes a menu displaying the options the user can choose from.
+
+        Additionally, the method alter self._options to remove the part that is only relevant for the menu.
+
+        Returns the menu.
+        """
         menu = [
             'Please choose what to do next (enter the digit corresponding to your choice):',
             '------------------------------']
@@ -147,10 +153,67 @@ class Manager(object):
             method = getattr(self, 'reprompt')
         return method()
 
+    def browsePages(modifying = False):
+        """Uses PAGESIZE to display the objects in self._collection on several pages.
+
+        Lets the user navigate to the next page until an escape character or an item selection is made.
+        If modifying is False, the user will not be able to select items.
+        Clears terminal before returning.
+
+        Returns the final input from the user.
+        """
+
+        #Variable initialization
+        choice = 'n'
+        current = 0
+        options = []    #Holds all strings that are considered valid input
+        promptStr = None
+        endStr = "'n' to see the next page of " + self._plural + " or 'q' to get back to the main menu.\n"
+
+        #Populate options and promptStr
+        if modifying:
+            #Add all indices to the options and specify to the user that modification is possible
+            options = list(range(len(self._collection)))
+            options = [str(i) for i in options]
+            promptStr = '\nEnter the index of the ' + self._singular + ' to modify. Alternatively, enter ' + endStr
+        else:
+            promptStr = '\nEnter ' + endStr
+        options.append('q')
+        options.append('n')
+
+        #Loop through the list until the user chooses an index or to quit
+        while choice == 'n':
+            for i in range(1 + (len(self._collection) - 1) // PAGESIZE):
+                clearTerminal()
+                print('\nList of ' + self._plural +', page ' + str(i + 1) + ':\n')
+                for j in range(PAGESIZE):
+                    current = PAGESIZE * i + j
+                    if current < len(self._collection):
+                        print(str(current) + ': ', end='')  #Do not print a newline yet
+                        #self._collection[current].printCounter()
+                        print(self._collection[current])
+                    else:
+                        break
+
+                #Give info and "force" the user to enter valid input
+                print(promptStr)
+                choice = ''
+                while not choice in options:
+                    choice = input('Choice: ')
+
+                if choice == 'n':
+                    continue    #Go to next page (loops around if currently on last page)
+                else:
+                    break   #Since the while loop terminates when choice != 'n', this should break out of both loops.
+
+        clearTerminal()
+        return choice
+
     def run(self):
+        """Manage objects until the user decides to exit."""
         while self._running:
             self.showMenu()
-            choice = getPosInt('your choice', len(self._options) - 1)
+            choice = getPosInt('your choice', len(self._options))
 
             self.chooseAction(choice)
 
@@ -158,7 +221,7 @@ class Manager(object):
         clearTerminal()
         quitting = True
         if self._modified:
-            print('You have made unsaved changes to the counters. Are you sure you want to exit without saving?\n')
+            print('You have made unsaved changes to the ' + self._plural + '. Are you sure you want to exit without saving?\n')
             quitting = getConfirmation()
 
         if quitting:
@@ -166,10 +229,32 @@ class Manager(object):
             print('Have a nice day.\n')
 
     def load(self):
-        print('Loading')
+        reading = True
+        clearTerminal()
+        if self._modified and len(self._collection) > 0:
+            print('Loading from file will overwrite all current ' + self._plural + '. Are you sure you want to do this?\n')
+            reading = getConfirmation() #Do not proceed if the user doesn't confirm
+
+        if reading:
+            #Try to read from file. Inform the user if the file was not found.
+            try:
+                print('File read function has to be defined.')
+                # file = open(FILENAME, 'r')
+                # self._collection = readCounters(file)
+                # file.close()
+                # print('Data was read from file.\n')
+                # self._modified = False
+            except FileNotFoundError:
+                print('There is no file that can be loaded. No changes were made.\n')
+        else:
+            print('No data was read.\n')
 
     def show(self):
-        print('Showing')
+        if len(self._collection) == 0:
+            clearTerminal()
+            print('No ' + self._plural + ' have been added yet.\n')
+        else:
+            browsePages(self._collection)
 
     def add(self):
         print('Adding')
@@ -178,64 +263,28 @@ class Manager(object):
         print('Modifying')
 
     def save(self):
-        print('Saving')
+        clearTerminal()
+        if len(self._collection) == 0:
+            print('There are no ' + self._plural + ' to save.\n')
+        else:
+            print("'Saving will overwrite all content in '" + FILENAME + "'. Are you sure?\n")
+            if getConfirmation():
+                file = open(FILENAME, 'w')
+                for obj in self._collection:
+                    obj.writeToFile(file)
+                file.close()
+                self._modified = False
+                print('Data saved.\n')
+            else:
+                print('Save aborted.\n')
 
     def reprompt(self):
-        print('Reprompting')
+        """Prepare to display the menu and prompt the user again.
 
-
-def browsePages(counterList, modifying = False):
-    """Uses PAGESIZE to display the counters in counterList on several pages.
-    Lets the user navigate to the next page until an escape character or an item selection is made.
-    If modifying is False, the user will not be able to select items.
-    Clears terminal before returning.
-    Returns the final input from the user.
-    """
-
-    #Variable initialization
-    choice = 'n'
-    current = 0
-    options = []    #Holds all strings that are considered valid input
-    promptStr = None
-    endStr = "'n' to see the next page of counters or 'q' to get back to the main menu.\n"
-
-    #Populate options and promptStr
-    if modifying:
-        #Add all indices to the options and specify to the user that modification is possible
-        options = list(range(len(counterList)))
-        options = [str(i) for i in options]
-        promptStr = "\nEnter the index of the counter to modify. Alternatively, enter " + endStr
-    else:
-        promptStr = "\nEnter " + endStr
-    options.append('q')
-    options.append('n')
-
-    #Loop through the list until the user chooses an index or to quit
-    while choice == 'n':
-        for i in range(1 + (len(counterList) - 1) // PAGESIZE):
-            clearTerminal()
-            print('\nList of counters, page ' + str(i + 1) + ':\n')
-            for j in range(PAGESIZE):
-                current = PAGESIZE * i + j
-                if current < len(counterList):
-                    print(str(current) + ': ', end='')  #Do not print a newline yet
-                    counterList[current].printCounter()
-                else:
-                    break
-
-            #Give info and "force" the user to enter valid input
-            print(promptStr)
-            choice = ''
-            while not choice in options:
-                choice = input('Choice: ')
-
-            if choice == 'n':
-                continue    #Go to next page (loops around if currently on last page)
-            else:
-                break   #Since the while loop terminates when choice != 'n', this should break out of both loops.
-
-    clearTerminal()
-    return choice
+        The method should never get called if using a correctly implemented getPosInt() call with valid parameters to prompt the user.
+        """
+        clearTerminal()
+        print('You entered an invalid option. Try again.\n')
 
 def addCounter():
     """Prompts the user for input to create a new counter and asks if it should be added.
@@ -334,25 +383,6 @@ def changeCounter(counterList):
 # while running:
 #     makeMenu()
 #     res = input('Enter the digit corresponding to your choice: ')
-#     if res == '1':
-#         reading = True
-#         clearTerminal()
-#         if modified and len(counters) > 0:
-#             print('Loading from file will overwrite all current counters. Are you sure you want to do this?\n')
-#             reading = getConfirmation() #Do not proceed if the user doesn't confirm
-#
-#         if reading:
-#             #Try to read from file. Inform the user if the file was not found.
-#             try:
-#                 file = open(FILENAME, 'r')
-#                 counters = readCounters(file)
-#                 file.close()
-#                 print('Data was read from file.\n')
-#                 modified = False
-#             except FileNotFoundError:
-#                 print('There is no file that can be loaded. No changes were made.\n')
-#         else:
-#             print('No data was read.\n')
 #     elif res == '2':
 #         if len(counters) == 0:
 #             clearTerminal()
@@ -398,34 +428,6 @@ def changeCounter(counterList):
 #                 modified = True
 #             else:
 #                 print('Modification aborted. No changes were made.\n')
-#     elif res == '5':
-#         clearTerminal()
-#         if len(counters) == 0:
-#             print("There are no counters to save.\n")
-#         else:
-#             print("Saving will overwrite all content in '" + FILENAME + "'. Are you sure?\n")
-#             if getConfirmation():
-#                 file = open(FILENAME, 'w')
-#                 for counter in counters:
-#                     counter.writeToFile(file)
-#                 file.close()
-#                 modified = False
-#                 print('Data saved.\n')
-#             else:
-#                 print('Save aborted.\n')
-#     elif res == '6':
-#         clearTerminal()
-#         quitting = True
-#         if modified:
-#             print('You have made unsaved changes to the counters. Are you sure you want to exit without saving?\n')
-#             quitting = getConfirmation()
-#
-#         if quitting:
-#             running = False
-#             print('Have a nice day.\n')
-#     else:
-#         clearTerminal()
-#         print('You entered an invalid option. Try again.\n')
 
 man = Manager('testClass', 'testClasses')
 man.run()
