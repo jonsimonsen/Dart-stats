@@ -22,7 +22,6 @@ class DartManager(Manager):
         """Class specific helper for the add method that does the actual creation of a new score object."""
 
         #Ask for the name of the counter
-        # clearTerminal()
         # prompt = 'Please enter the name of the counter (Max. ' + str(NAME_LEN) + ' characters): '
         # name = input(prompt)
         # while len(name) == 0 or len(name) > NAME_LEN:
@@ -34,14 +33,15 @@ class DartManager(Manager):
         #
         # #Create the counter
         # counter = UnitCounter(name, int(count))
-        #
-        # #Add info if the user wishes
-        # clearTerminal()
-        # info = input('Type any additional info and press enter (press enter directly if there is no additional info): ')
-        # if len(info):
-        #     counter.setInfo(info)
+
         return None
 
     def changeObject(self):
         """Class specific helper for the modify method that creates a new object based on an existing object."""
+
+        # counter = counterList[index].makeCopy()
+        # print('Choose a new value for the count.\n')
+        # count = getPosInt('The count', 10**COUNT_LEN - 1)
+        # counter.setCount(count)
+        # return (counter, index)
         return None

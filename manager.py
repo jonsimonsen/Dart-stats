@@ -3,14 +3,14 @@
 ####################
 
 #Creator: Jon Simonsen
-#Version 0.1
-#Last official change: 09.02.20
+#Version 0.1+
+#Last official change: 14.02.20
 
 #Contains a menu-driven environment for managing objects.
 #This includes adding, modifying, displaying, saving and loading instances.
 
 #Imports
-import os
+from user_io import clearTerminal, getConfirmation, getPosInt
 
 #Global constants
 FILENAME = 'get_out.txt'
@@ -18,79 +18,89 @@ GREETING = '\nWelcome. This is a greeting for the base Manager class, and should
 INFO = "This Manager will use the file '" + FILENAME + "' in this directory for loading and saving data,\nbut this info and the file name should be overridden for real Manager classes.\n"
 PAGESIZE = 16   #Number of objects to display on a page (when modifying or showing objects)
 
+#
+#DELETE
+#
+
 ###########
 # Methods #
 ###########
 
-def clearTerminal():
-    """Clear the terminal or command window that python is running in.
-
-    Found at https://stackoverflow.com/questions/517970/how-to-clear-the-interpreter-console
-    """
-    os.system('cls' if os.name == 'nt' else 'clear')
-
-def getConfirmation():
-    """Prompts the user for input until 'y' or 'n' has been entered.
-
-    An explanation of what the user can confirm should be given before calling the function.
-    Clears the terminal before returning.
-
-    Returns True if 'y' and False if 'n'
-    """
-    answer = ''
-
-    while answer not in ['y', 'n']:
-        answer = input("Press 'y' for yes or 'n' for no and hit enter: ")
-    clearTerminal()
-
-    if answer == 'y':
-        return True
-    else:
-        return False
-
-def getPosInt(valName, maxVal):
-    """Prompt the user for an integer until a non-negative integer that is not higher than maxVal is entered. Returns that integer."""
-    #Initial prompt
-    prompt = 'Enter ' + valName.lower() + ' (Max. ' + str(maxVal) + '): '
-    num = -1
-
-    #Loop until valid input is given
-    while True:
-        count = input(prompt)
-        #Try to convert to an int. Change the prompt for the next iteration (if any)
-        try:
-            num = int(count)
-            if num < 0:
-                prompt = valName + ' must be a positive integer or zero. Try again: '
-            elif num > maxVal:
-                prompt = valName + ' must be ' + str(maxVal) + ' or less. Try again: '
-            else:
-                break
-        except ValueError:
-            prompt = valName + ' must be an integer. Try again: '
-
-    return num
+# def clearTerminal():
+#     """Clear the terminal or command window that python is running in.
+#
+#     Found at https://stackoverflow.com/questions/517970/how-to-clear-the-interpreter-console
+#     """
+#     os.system('cls' if os.name == 'nt' else 'clear')
+#
+# def getConfirmation():
+#     """Prompts the user for input until 'y' or 'n' has been entered.
+#
+#     An explanation of what the user can confirm should be given before calling the function.
+#     Clears the terminal before returning.
+#
+#     Returns True if 'y' and False if 'n'
+#     """
+#     answer = ''
+#
+#     while answer not in ['y', 'n']:
+#         answer = input("Press 'y' for yes or 'n' for no and hit enter: ")
+#     clearTerminal()
+#
+#     if answer == 'y':
+#         return True
+#     else:
+#         return False
+#
+# def getPosInt(valName, maxVal):
+#     """Prompt the user for an integer until a non-negative integer that is not higher than maxVal is entered. Returns that integer."""
+#     #Initial prompt
+#     prompt = 'Enter ' + valName.lower() + ' (Max. ' + str(maxVal) + '): '
+#     num = -1
+#
+#     #Loop until valid input is given
+#     while True:
+#         count = input(prompt)
+#         #Try to convert to an int. Change the prompt for the next iteration (if any)
+#         try:
+#             num = int(count)
+#             if num < 0:
+#                 prompt = valName + ' must be a positive integer or zero. Try again: '
+#             elif num > maxVal:
+#                 prompt = valName + ' must be ' + str(maxVal) + ' or less. Try again: '
+#             else:
+#                 break
+#         except ValueError:
+#             prompt = valName + ' must be an integer. Try again: '
+#
+#     return num
 
 class Manager(object):
     """Manager for objects of the Saveable class"""
 
     def __init__(self, singular, plural):
-        """Create a new manager"""
+        """Create a new manager.
+
+        singular should be the description of a single element of the class (presumably the class name)
+        plural should be the description of a collection of elements of the class (presumably the class name followed by an ending)
+        """
+
         self._running = True
         self._modified = False
         self._singular = singular
         self._plural = plural
         self._collection = []
 
-        self._options = self.makeOptions()
-        self._menu = self.makeMenu()
+        self._options = self._makeOptions()
+        self._menu = self._makeMenu()
 
-        #Greet the user
-        clearTerminal()
-        self.greet()
+    def _makeOptions(self):
+        """Creates a list of options for a menu and returns it.
 
-    def makeOptions(self):
-        """Creates a list of options for a menu and returns it."""
+        The options are predefined inside this method.
+        Each of them should have a corresponding method
+        that is run when the user chooses that option.
+        """
 
         options = [
             'Exit\n',
@@ -103,19 +113,23 @@ class Manager(object):
 
         return options
 
-    def makeMenu(self):
+    def _makeMenu(self):
         """Makes a menu displaying the options the user can choose from.
 
-        Additionally, the method alter self._options to remove the part that is only relevant for the menu.
+        The option at index 0 will be displayed at the bottom of the menu.
+        Additionally, the method alters self._options to remove the part that is only relevant for the menu.
 
         Returns the menu.
         """
+
         menu = [
             'Please choose what to do next (enter the digit corresponding to your choice):',
             '------------------------------']
+
+        #Add all options to the menu
         for num, opt in enumerate(self._options[1:], 1):
             menu.append(str(num) + ': ' + opt)
-        menu.append('0: ' + self._options[0])
+        menu.append('0: ' + self._options[0])   #The first option is added last (presumably an exit option)
 
         #Options does not need to keep track of more than the first word anymore
         for num, opt in enumerate(self._options):
@@ -125,15 +139,17 @@ class Manager(object):
 
     def showMenu(self):
         """Displays the menu in the terminal."""
+
         [print(line) for line in self._menu]
 
-    def greet(self):
+    def _greet(self):
         """Displays a greeting and additional info.
 
         GREETING must be defined as a global constant.
         INFO must be defined as a global constant.
         """
-        #Should probably be defined as an ADT method to be defined in children
+
+        #Should possibly be defined as an ADT method to be defined in children
         print(GREETING + INFO)
 
     def chooseAction(self, choice):
@@ -145,11 +161,14 @@ class Manager(object):
         """
 
         option = 'undefinedMethod'
+
+        #If the choice is a valid option, prepare to run the corresponding method
         try:
             option = self._options[choice]
         except Exception:
             pass
 
+        #Run the corresponding method. Based on:
         #https://www.pydanny.com/why-doesnt-python-have-switch-case.html
         method = getattr(self, option, 'invalid')
         if method == 'invalid':
@@ -181,8 +200,8 @@ class Manager(object):
             promptStr = '\nEnter the index of the ' + self._singular + ' to modify. Alternatively, enter ' + endStr
         else:
             promptStr = '\nEnter ' + endStr
-        options.append('q')
-        options.append('n')
+        options.append('q') #Allow quitting from the navigation
+        options.append('n') #Allow navigating to the next page
 
         #Loop through the list until the user chooses an index or to quit
         while choice == 'n':
@@ -214,6 +233,11 @@ class Manager(object):
 
     def run(self):
         """Manage objects until the user decides to exit."""
+
+        #Greet the user
+        clearTerminal()
+        self._greet()
+
         while self._running:
             self.showMenu()
             choice = getPosInt('your choice', len(self._options))
@@ -221,6 +245,12 @@ class Manager(object):
             self.chooseAction(choice)
 
     def exit(self):
+        """Conditionally exit the currently running session in the manager app.
+
+        If there are unsaved changes, the user is asked for confirmation before exiting.
+        If the conditions for exiting are met, the state of the manager is changed to stop running.
+        """
+
         clearTerminal()
         quitting = True
         if self._modified:
@@ -260,7 +290,14 @@ class Manager(object):
             browsePages(self._collection)
 
     def add(self):
+        clearTerminal()
         obj = self.addObject()
+
+        #Add info if the user wishes
+        clearTerminal()
+        info = input('Type any additional info and press enter (press enter directly if there is no additional info): ')
+        if len(info):
+            obj.setInfo(info)
 
         #Display the counter and ask if it should be added
         clearTerminal()
@@ -277,7 +314,67 @@ class Manager(object):
             print('No ' + self._singular + ' was added.\n')
 
     def modify(self):
-        print('Modifying')
+        clearTerminal()
+        Tup = None
+
+        #If no objectss were provided, there's nothing to change
+        if len(self._collection) == 0:
+            print('There are no ' + self._plural + ' to modify.\n')
+            return
+
+        #Print information to the user
+        print('You will now be presented with a list of the ' + self._plural + ' you can modify.\n'
+        'Each will be preceded by its index.\n')
+        input('Press enter to continue: ')
+
+        choice = browsePages(True)
+
+        if choice == 'q':
+            print('Nothing was changed.\n')
+            return
+
+        index = int(choice)
+        print('You can now modify the following ' + self._singular + ':\n')
+        #self._collection[index].printCounter()
+        print(self._collection[index])
+        print('\nDo you want to delete it?\n')
+
+        if getConfirmation():
+            Tup = (None, index)
+        else:
+            Tup = changeObject(self)
+
+            info = input('Choose new value for info: ')
+            Tup[0].setInfo(info)
+            clearTerminal()
+
+        obj = Tup[0]
+
+        #Display the old and new object and ask if the changes are ok
+        print('The original ' + self._singular + ' was:\n')
+        #self._collection[Tup[1]].printCounter()
+        print(self._collection[Tup[1]])
+
+        if obj is None:
+            print('\nAre you sure you want to delete it?\n')
+            if getConfirmation():
+                self._collection.pop(Tup[1])
+                print('The ' + self._singular + ' has been deleted.\n')
+                self._modified = True
+            else:
+                print('No changes were made.\n')
+        else:
+            print('\nHere is your new ' + self._singular + ':\n')
+            #obj.printCounter()
+            print(obj)
+            print('\nDo you want to keep these changes?\n')
+
+            if getConfirmation():
+                self._collection[Tup[1]] = obj
+                print('The ' + self._singular + ' was updated.\n')
+                self._modified = True
+            else:
+                print('Modification aborted. No changes were made.\n')
 
     def save(self):
         clearTerminal()
@@ -312,75 +409,47 @@ def changeCounter(counterList):
     The new counter will be returned as None if the user chose to delete a counter.
     Returns None if the user decided to not change anything after all. Also prints some status info after clearing the terminal when returning None.
     """
-    clearTerminal()
-    #If no counters were provided, there's nothing to change
-    if len(counterList) == 0:
-        print('There are no counters to modify.\n')
-        return None
-
-    #Print information to the user
-    print('You will now be presented with a list of the counters you can modify.\n'
-    'Each will be preceded by its index.\n')
-    input('Press enter to continue: ')
-
-    choice = browsePages(counterList, True)
-
-    if choice == 'q':
-        print('Nothing was changed.\n')
-        return None
-    else:
-        index = int(choice)
-        print('You can now modify the following counter:\n')
-        counterList[index].printCounter()
-        print('\nDo you want to delete it?\n')
-
-        if getConfirmation():
-            return (None, index)
-        else:
-            counter = counterList[index].makeCopy()
-            print('Choose a new value for the count.\n')
-            count = getPosInt('The count', 10**COUNT_LEN - 1)
-            counter.setCount(count)
-            info = input('Choose new value for info: ')
-            counter.setInfo(info)
-            clearTerminal()
-            return (counter, index)
+        # counter = counterList[index].makeCopy()
+        # print('Choose a new value for the count.\n')
+        # count = getPosInt('The count', 10**COUNT_LEN - 1)
+        # counter.setCount(count)
+        # return (counter, index)
 
 ##########################
 # Main (executable code) #
 ##########################
 
-#     elif res == '4':
-#         counterTup = changeCounter(counters)
-#
-#         if counterTup is None:
-#             continue
-#
-#         counter = counterTup[0]
-#
-#         #Display the old and new counter and ask if the changes are ok
-#         print('The original counter was:\n')
-#         counters[counterTup[1]].printCounter()
-#
-#         if counter is None:
-#             print('\nAre you sure you want to delete it?\n')
-#             if getConfirmation():
-#                 counters.pop(counterTup[1])
-#                 print('The counter has been deleted.\n')
-#                 modified = True
-#             else:
-#                 print('No changes were made.\n')
-#         else:
-#             print('\nHere is your new counter:\n')
-#             counter.printCounter()
-#             print('\nDo you want to keep these changes?\n')
-#
-#             if getConfirmation():
-#                 counters[counterTup[1]] = counter
-#                 print('The counter was updated.\n')
-#                 modified = True
-#             else:
-#                 print('Modification aborted. No changes were made.\n')
+    # elif res == '4':
+    #     counterTup = changeCounter(counters)
+    #
+    #     if counterTup is None:
+    #         continue
+    #
+    #     counter = counterTup[0]
+    #
+    #     #Display the old and new counter and ask if the changes are ok
+    #     print('The original counter was:\n')
+    #     counters[counterTup[1]].printCounter()
+    #
+    #     if counter is None:
+    #         print('\nAre you sure you want to delete it?\n')
+    #         if getConfirmation():
+    #             counters.pop(counterTup[1])
+    #             print('The counter has been deleted.\n')
+    #             modified = True
+    #         else:
+    #             print('No changes were made.\n')
+    #     else:
+    #         print('\nHere is your new counter:\n')
+    #         counter.printCounter()
+    #         print('\nDo you want to keep these changes?\n')
+    #
+    #         if getConfirmation():
+    #             counters[counterTup[1]] = counter
+    #             print('The counter was updated.\n')
+    #             modified = True
+    #         else:
+    #             print('Modification aborted. No changes were made.\n')
 
 man = Manager('testClass', 'testClasses')
 man.run()
