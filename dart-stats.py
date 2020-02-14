@@ -8,6 +8,7 @@
 
 #Imports
 from manager import Manager
+from scores import readScores
 
 #Global constants
 FILENAME = 'darts_out.txt'
@@ -45,3 +46,11 @@ class DartManager(Manager):
         # counter.setCount(count)
         # return (counter, index)
         return None
+
+    def readObjects(self, file):
+        """Use the class specific read function to create darts base on reading them from file.
+
+        file should be a handle to the file where darts are stored.
+        """
+
+        self._collection = readScores(file)

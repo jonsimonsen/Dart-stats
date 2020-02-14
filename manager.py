@@ -262,6 +262,14 @@ class Manager(object):
             print('Have a nice day.\n')
 
     def load(self):
+        """Conditionally load objects from file.
+
+        The global constant FILENAME must be defined.
+        The method readObjects must be implemented.
+        If there are any objects in the manager and there has been changes,
+        the user will be asked for confirmation to prevent unintended loss of data.
+        """
+
         reading = True
         clearTerminal()
         if self._modified and len(self._collection) > 0:
@@ -271,18 +279,21 @@ class Manager(object):
         if reading:
             #Try to read from file. Inform the user if the file was not found.
             try:
-                print('File read function has to be defined.')
-                # file = open(FILENAME, 'r')
-                # self._collection = readCounters(file)
-                # file.close()
-                # print('Data was read from file.\n')
-                # self._modified = False
+                file = open(FILENAME, 'r')
+                readObjects(file)
+                file.close()
+                print('Data was read from file.\n')
+                self._modified = False
             except FileNotFoundError:
                 print('There is no file that can be loaded. No changes were made.\n')
+            except NotImplementedError as err:
+                print(err)
+                print('No changes were made.\n')
         else:
             print('No data was read.\n')
 
     def show(self):
+        """Let the user navigate through pages containing all managed objects."""
         if len(self._collection) == 0:
             clearTerminal()
             print('No ' + self._plural + ' have been added yet.\n')
@@ -399,6 +410,14 @@ class Manager(object):
         """
         clearTerminal()
         print('You entered an invalid option. Try again.\n')
+
+    def readObjects(self, file):
+        """Read objects from file. Must be overridden in child classes.
+
+        If the method is not overridden, it will raise an exception.
+        """
+
+        raise NotImplementedError("Please don't try to read from file using the ADT readObjects method. Child classes should override it.")
 
 def changeCounter(counterList):
     """Function for creating a new counter based on an existing one and returning the new one along with a reference to the old one.
