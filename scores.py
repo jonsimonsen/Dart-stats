@@ -157,6 +157,12 @@ class Score(Saveable):
 
         return sorted(darts, reverse=True)
 
+    def makeCopy(self):
+        """Returns a copy of this score (not deep copy)"""
+        score = Score(self._darts[0], self._darts[1], self._darts[2])
+        score.setInfo(self._info)
+        return score
+        
 #Function that creates scores instances from a file
 def readScores(handle):
     """Read all Scores from the file that handle references and return a list of these scores."""

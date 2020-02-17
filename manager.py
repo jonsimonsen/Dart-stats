@@ -10,13 +10,13 @@
 #This includes adding, modifying, displaying, saving and loading instances.
 
 #Imports
-from user_io import clearTerminal, getConfirmation, getPosInt
+from user_io import *
 
 #Global constants
-FILENAME = 'get_out.txt'
-GREETING = '\nWelcome. This is a greeting for the base Manager class, and should be overridden for real classes.\n\n'
-INFO = "This Manager will use the file '" + FILENAME + "' in this directory for loading and saving data,\nbut this info and the file name should be overridden for real Manager classes.\n"
-PAGESIZE = 16   #Number of objects to display on a page (when modifying or showing objects)
+# FILENAME = 'get_out.txt'
+# GREETING = '\nWelcome. This is a greeting for the base Manager class, and should be overridden for real classes.\n\n'
+# INFO = "This Manager will use the file '" + FILENAME + "' in this directory for loading and saving data,\nbut this info and the file name should be overridden for real Manager classes.\n"
+# PAGESIZE = 16   #Number of objects to display on a page (when modifying or showing objects)
 
 #
 #DELETE
@@ -77,6 +77,12 @@ PAGESIZE = 16   #Number of objects to display on a page (when modifying or showi
 
 class Manager(object):
     """Manager for objects of the Saveable class"""
+
+    #Class level attributes
+    _fileName = 'get_out.txt'
+    _greeting = '\nWelcome. This is a greeting for the base Manager class, and should be overridden for real classes.\n\n'
+    _info = "This Manager will use the file '" + _fileName + "' in this directory for loading and saving data,\nbut this info and the file name should be overridden for real Manager classes.\n"
+    _pageSize = 16   #Number of objects to display on a page (when modifying or showing objects)
 
     def __init__(self, singular, plural):
         """Create a new manager.
@@ -145,12 +151,12 @@ class Manager(object):
     def _greet(self):
         """Displays a greeting and additional info.
 
-        GREETING must be defined as a global constant.
-        INFO must be defined as a global constant.
+        _greeting must be a class level attribute.
+        _info must be a class level attribute.
         """
 
         #Should possibly be defined as an ADT method to be defined in children
-        print(GREETING + INFO)
+        print(self._greeting + self._info)
 
     def chooseAction(self, choice):
         """Choose the action corresponding to choice.
@@ -175,8 +181,8 @@ class Manager(object):
             method = getattr(self, 'reprompt')
         return method()
 
-    def browsePages(modifying = False):
-        """Uses PAGESIZE to display the objects in self._collection on several pages.
+    def browsePages(self, modifying = False):
+        """Uses _pageSize to display the objects in self._collection on several pages.
 
         Lets the user navigate to the next page until an escape character or an item selection is made.
         If modifying is False, the user will not be able to select items.
@@ -205,11 +211,11 @@ class Manager(object):
 
         #Loop through the list until the user chooses an index or to quit
         while choice == 'n':
-            for i in range(1 + (len(self._collection) - 1) // PAGESIZE):
+            for i in range(1 + (len(self._collection) - 1) // self._pageSize):
                 clearTerminal()
                 print('\nList of ' + self._plural +', page ' + str(i + 1) + ':\n')
-                for j in range(PAGESIZE):
-                    current = PAGESIZE * i + j
+                for j in range(self._pageSize):
+                    current = self._pageSize * i + j
                     if current < len(self._collection):
                         print(str(current) + ': ', end='')  #Do not print a newline yet
                         #self._collection[current].printCounter()
@@ -264,7 +270,8 @@ class Manager(object):
     def load(self):
         """Conditionally load objects from file.
 
-        The global constant FILENAME must be defined.
+        The class level attribute _fileName
+        should be the name of a file in the same directory the app is run from.
         The method readObjects must be implemented.
         If there are any objects in the manager and there has been changes,
         the user will be asked for confirmation to prevent unintended loss of data.
@@ -279,8 +286,8 @@ class Manager(object):
         if reading:
             #Try to read from file. Inform the user if the file was not found.
             try:
-                file = open(FILENAME, 'r')
-                readObjects(file)
+                file = open(self._fileName, 'r')
+                self.readObjects(file)
                 file.close()
                 print('Data was read from file.\n')
                 self._modified = False
@@ -298,7 +305,7 @@ class Manager(object):
             clearTerminal()
             print('No ' + self._plural + ' have been added yet.\n')
         else:
-            browsePages(self._collection)
+            self.browsePages()
 
     def add(self):
         clearTerminal()
@@ -338,7 +345,7 @@ class Manager(object):
         'Each will be preceded by its index.\n')
         input('Press enter to continue: ')
 
-        choice = browsePages(True)
+        choice = self.browsePages(True)
 
         if choice == 'q':
             print('Nothing was changed.\n')
@@ -353,7 +360,7 @@ class Manager(object):
         if getConfirmation():
             Tup = (None, index)
         else:
-            Tup = changeObject(self)
+            Tup = self.changeObject(index)
 
             info = input('Choose new value for info: ')
             Tup[0].setInfo(info)
@@ -392,9 +399,9 @@ class Manager(object):
         if len(self._collection) == 0:
             print('There are no ' + self._plural + ' to save.\n')
         else:
-            print("'Saving will overwrite all content in '" + FILENAME + "'. Are you sure?\n")
+            print("'Saving will overwrite all content in '" + self._fileName + "'. Are you sure?\n")
             if getConfirmation():
-                file = open(FILENAME, 'w')
+                file = open(self._fileName, 'w')
                 for obj in self._collection:
                     obj.writeToFile(file)
                 file.close()
@@ -470,5 +477,5 @@ def changeCounter(counterList):
     #         else:
     #             print('Modification aborted. No changes were made.\n')
 
-man = Manager('testClass', 'testClasses')
-man.run()
+#man = Manager('testClass', 'testClasses')
+#man.run()

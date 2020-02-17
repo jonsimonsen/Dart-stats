@@ -7,7 +7,7 @@
 #Last official change: 14.02.20
 
 #Imports
-from system import os
+import os
 
 def clearTerminal():
     """Clear the terminal or command window that python is running in.
@@ -35,11 +35,12 @@ def getConfirmation():
     else:
         return False
 
-def getPosInt(valName, maxVal = 999999999):
+def getPosInt(valName, maxVal = 999999999, inclusive = True):
     """Prompt the user for an integer until a non-negative integer that is not higher than maxVal is entered.
 
     valName should be a short description of the integer (what it represents) for use in prompting.
     maxVal should be the highest allowed value. It uses a default value if nothing is provided.
+    inclusive should be a boolean telling if zero is allowed.
 
     Returns the first valid integer entered by the user."""
     #Initial prompt
@@ -52,8 +53,13 @@ def getPosInt(valName, maxVal = 999999999):
         #Try to convert to an int. Change the prompt for the next iteration (if any)
         try:
             num = int(count)
-            if num < 0:
-                prompt = valName + ' must be a positive integer or zero. Try again: '
+            if num == 0 and not inclusive:
+                prompt = valName + ' can not equal zero. Try again: '
+            elif num < 0:
+                prompt = valName + ' must be a positive integer '
+                if inclusive:
+                    prompt += 'or zero'
+                prompt += '. Try again: '
             elif num > maxVal:
                 prompt = valName + ' must be ' + str(maxVal) + ' or less. Try again: '
             else:
